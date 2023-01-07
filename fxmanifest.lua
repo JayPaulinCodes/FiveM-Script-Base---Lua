@@ -3,7 +3,7 @@ games { "gta5" }
 
 name "NAME"
 description "DESCRIPTION"
-version "1.0.1"
+version "0.0.1"
 author "JayPaulinCodes (https://github.com/JayPaulinCodes)"
 
 github_link "JayPaulinCodes/FiveM-Script-Base---Lua"
