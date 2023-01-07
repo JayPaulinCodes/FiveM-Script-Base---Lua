@@ -24,12 +24,7 @@ server_scripts {
 }
 
 client_scripts {
-<<<<<<< HEAD
     "client/functions.lua",
     "client/events.lua",
     "client/main.lua",
 }
-=======
-
-}
->>>>>>> f87410b6d7f7110f1b74fd86eae76238b5ada878
