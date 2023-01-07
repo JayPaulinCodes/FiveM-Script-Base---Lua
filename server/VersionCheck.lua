@@ -1,96 +1,100 @@
 local installedVersion = GetResourceMetadata(GetCurrentResourceName(), "version", 0)
-local githubVersion = ""
-local githubURL = GetResourceMetadata(GetCurrentResourceName(), "github_link", 0) .. "/master/fxmanifest.lua"
-
-
-local printArrayOpen = {
-    "\n\n\n\t^4 _____________________________________________________",
-    "\t^4| |^4                                                 ^4| |",
-    "\t^4| |^6                 JayVehicleControls              ^4| |",
-    "\t^4| |^7      Thank you for using JayVehicleControls!    ^4| |",
-    "\t^4| |^9      Discord: ^7https://discord.gg/aJcVKFMd9F     ^4| |",
-    "\t^4| |^9             Installed Version: ^7" .. installedVersion .. "            ^4| |",
+local githubVersion = "0.0.1"
+local githubURL = GetResourceMetadata(GetCurrentResourceName(), "github_link", 0)
+local githubRawURL = "https://raw.githubusercontent.com/" .. GetResourceMetadata(GetCurrentResourceName(), "github_link", 0) .. "/master/fxmanifest.lua"
+local printArray = {
+    "\n"
 }
 
-local printArrayUpdate = {
-    "\t^4| |^4                                                 ^4| |",
-    "\t^4| |^3            !!! ^1UPDATE REQUIRED ^3!!!^4              | |",
-    "\t^4| |^1              DOWNLOAD FROM GITHUB:              ^4| |",
-    "\t^4| |^1   github.com/JayPaulinCodes/JayBasics/releases  ^4| |",
-}
+Citizen.CreateThread(function()
+    print("Script starting up...")
+    Citizen.Wait(3000)
 
-local printArrayName = {
-    "\t^4| |^4                                                 ^4| |",
-    "\t^4| |^3          !!! ^1INVALID RESOURCE NAME ^3!!!          ^4| |",
-    "\t^4| |^1 RESOURCE NAME MUST BE ^7'JayBasics' ^1CASESENSITIVE ^4| |",
-    "\t^4| |^1    PLEASE RENAME AND THEN RESTART THE SERVER    ^4| |",
-}
+    updateVersionFromGitHubURL()
 
-local printArrayClose = {
-    "\t^4| |^4                                                 ^4| |",
-    "\t^4|_|_________________________________________________|_|\n\n\n",
-}
+    Citizen.Wait(1000)
 
+    local line0 = ""
+    local line1 = "^6" .. GetCurrentResourceName()
+    local line2 = "^7Thank you for using " .. line1 .. "^7!"
+    local line3 = "^9Discord: ^7https://discord.gg/aJcVKFMd9F"
+    local line4 = "^9Installed Version: ^7" .. installedVersion
+    local line4_5 = "^9Latest Version: ^7" .. githubVersion
+    local line5 = ""
+    local line6 = "^3!!! ^1UPDATE REQUIRED ^3!!!^4"
+    local line7 = "^1DOWNLOAD FROM GITHUB:"
+    local line8 = "^1github.com/" .. githubURL .. "/releases"
+    local line9 = ""
 
-Citizen.CreateThread( function()
+    if installedVersion ~= githubVersion then
+        longestLine = findLongestStringLength(line0, line1, line2, line3, line4, line4_5, line5, line6, line7, line8, line9)
+    else 
+        longestLine = findLongestStringLength(line0, line1, line2, line3, line4, line9)
+    end
 
-    getVersionFromGitHubURL()
+    table.insert(printArray, "\t^4________" .. padString("", longestLine, "_") .. "^4________")
+    table.insert(printArray, "\t^4| |^6     " .. padString(line0, longestLine, " ") .. "     ^4| |")
+    table.insert(printArray, "\t^4| |^6      " .. padString(line1, longestLine, " ") .. "      ^4| |")
+    table.insert(printArray, "\t^4| |^6        " .. padString(line2, longestLine, " ") .. "        ^4| |")
+    table.insert(printArray, "\t^4| |^6       " .. padString(line3, longestLine, " ") .. "       ^4| |")
+    table.insert(printArray, "\t^4| |^6       " .. padString(line4, longestLine, " ") .. "       ^4| |")
+    
+    -- Version Check
+    if installedVersion ~= githubVersion then --	UPDATE DETECTED
+        table.insert(printArray, "\t^4| |^6       " .. padString(line4_5, longestLine, " ") .. "       ^4| |")
+        table.insert(printArray, "\t^4| |^6     " .. padString(line5, longestLine, " ") .. "     ^4| |")
+        table.insert(printArray, "\t^4| |^6         " .. padString(line6, longestLine, " ") .. "         ^4| |")
+        table.insert(printArray, "\t^4| |^6      " .. padString(line7, longestLine, " ") .. "      ^4| |")
+        table.insert(printArray, "\t^4| |^6      " .. padString(line8, longestLine, " ") .. "      ^4| |")
+    end
+    
+    table.insert(printArray, "\t^4| |^6     " .. padString(line9, longestLine, " ") .. "     ^4| |")
+    table.insert(printArray, "\t^4| |_____" .. padString("", longestLine, "_") .. "^4_____| |")
+    table.insert(printArray, "\n^7")
 
-    print(githubURL)
-
-    -- PerformHttpRequest("https://raw.githubusercontent.com/JayPaulinCodes/JayVehicleControls/master/version", function(error, responseText, headers)
-    --     if responseText ~= nil and responseText ~= "" then 
-    --         githubVersion = responseText 
-    --         table.insert(printArrayOpen, "\t^4| |^9              Latest Version: ^7" .. githubVersion .. "              ^4| |")
-    --     end
-    -- end)
-
-    -- Citizen.Wait(3000)
-
-    -- for i, message in ipairs(printArrayOpen) do
-    --     print(message)
-    -- end
-
-    -- Citizen.Wait(500)
-
-    -- -- Name Check
-    -- if GetCurrentResourceName() ~= "JayVehicleControls" then
-    --     for i, message in ipairs(printArrayName) do
-    --         print(message)
-    --     end
-
-    --     Citizen.CreateThread(loopNameMessage())
-
-    --     -- print(installedVersion, githubVersion, (installedVersion < githubVersion))
-    -- end
-
-    -- Citizen.Wait(500)
-
-    -- -- Version Check
-    -- -- if installedVersion ~= githubVersion then --	UPDATE DETECTED
-    -- --     for i, message in ipairs(printArrayUpdate) do
-    -- --         print(message)
-    -- --     end
-    -- -- end
-
-    -- for i, message in ipairs(printArrayClose) do
-    --     print(message)
-    -- end
+    for _, message in ipairs(printArray) do
+        print(message)
+    end
 
 end)
 
+function findLongestStringLength(...)
+    local args = {...}
+    longestLength = 0
 
-function getVersionFromGitHubURL() 
-
-    PerformHttpRequest(githubURL, function(error, responseText, headers)
-        if responseText ~= nil and responseText ~= "" then 
-            print(responseText)
+    for _, line in ipairs(args) do
+        length = string.len(line)
+        if length > longestLength then 
+            longestLength = length
         end
-    end)
+    end
 
+    return longestLength
 end
 
-function loopNameMessage()
-    print("^1INVALID RESOURCE NAME!!! ^3The script will not work if the name is not exactly \"JayVehicleControls\", please change the resource name and restart your server!")
-    Citizen.Wait(10000)
+function padString(str, targetLength, pad)
+    local returnString = str
+
+    ind = 0
+    while string.len(returnString) ~= targetLength do
+        Citizen.Wait(1)
+        if ind == 0 then
+            returnString = pad .. returnString
+            ind = 1
+        else 
+            returnString = returnString .. pad
+            ind = 0
+        end
+    end
+
+    return returnString
+end
+
+function updateVersionFromGitHubURL() 
+    PerformHttpRequest(githubRawURL, function(error, responseText, headers)
+        if responseText ~= nil and responseText ~= "" then 
+            local findres = string.find(responseText, '\nversion ".') + 10
+            githubVersion = string.sub(responseText, findres, string.find(string.sub(responseText, findres), '"') - 2 + findres)
+        end
+    end)
 end
